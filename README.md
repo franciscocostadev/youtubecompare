@@ -37,11 +37,4 @@ Aplicação web para comparar dados de **dois canais do YouTube** em tempo real.
 
 ---
 
-## 📦 Como Executar Localmente
-
-```bash
-git clone https://github.com/seu-usuario/YoutubeCompare.git
-cd YoutubeCompare
-dotnet restore
-dotnet run
 
