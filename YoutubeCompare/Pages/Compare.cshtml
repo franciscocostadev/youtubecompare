@@ -1,0 +1,90 @@
+﻿@page "/"
+@model YoutubeCompare.Pages.CompareModel
+@{
+    ViewData["Title"] = "Comparar Canais";
+
+    string GetHighlightClass(ulong a, ulong b) =>
+        a > b ? "text-success fw-bold" : a < b ? "text-danger fw-bold" : "text-secondary";
+
+    string GetIcon(ulong a, ulong b) =>
+        a > b ? "⬆️" : a < b ? "⬇️" : "⚖️";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4">Comparar Canais</h2>
+
+    <form method="post" class="row g-3 mb-4">
+        <div class="col-md-5">
+            <input type="text" name="Channel1" placeholder="Digite o Nome do Canal 1" required class="form-control" />
+        </div>
+        <div class="col-md-5">
+            <input type="text" name="Channel2" placeholder="Digite o Nome do Canal 2" required class="form-control" />
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">Comparar</button>
+        </div>
+        <div class="col-md-1">
+            <a href="/" class="btn btn-outline-secondary w-100">Limpar</a>
+        </div>
+    </form>
+
+    @if (Model.Canal1 != null && Model.Canal2 != null)
+    {
+        <div class="row mb-4">
+            @foreach (var canal in new[] { Model.Canal1, Model.Canal2 })
+            {
+                <div class="col-md-6 text-center">
+                    <img src="@canal.ThumbnailUrl" class="rounded-circle mb-2" alt="Thumbnail" />
+                    <h5>@canal.Title</h5>
+                    <p class="text-muted">@canal.Description?.Substring(0, Math.Min(100, canal.Description.Length))...</p>
+                </div>
+            }
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Métrica</th>
+                        <th>@Model.Canal1.Title</th>
+                        <th>@Model.Canal2.Title</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Inscritos</td>
+                        <td class="@GetHighlightClass(Model.Canal1.SubscriberCount, Model.Canal2.SubscriberCount)">
+                            @Model.Canal1.SubscriberCount.ToString("N0") @GetIcon(Model.Canal1.SubscriberCount, Model.Canal2.SubscriberCount)
+                        </td>
+                        <td class="@GetHighlightClass(Model.Canal2.SubscriberCount, Model.Canal1.SubscriberCount)">
+                            @Model.Canal2.SubscriberCount.ToString("N0") @GetIcon(Model.Canal2.SubscriberCount, Model.Canal1.SubscriberCount)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Visualizações</td>
+                        <td class="@GetHighlightClass(Model.Canal1.ViewCount, Model.Canal2.ViewCount)">
+                            @Model.Canal1.ViewCount.ToString("N0") @GetIcon(Model.Canal1.ViewCount, Model.Canal2.ViewCount)
+                        </td>
+                        <td class="@GetHighlightClass(Model.Canal2.ViewCount, Model.Canal1.ViewCount)">
+                            @Model.Canal2.ViewCount.ToString("N0") @GetIcon(Model.Canal2.ViewCount, Model.Canal1.ViewCount)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Vídeos</td>
+                        <td class="@GetHighlightClass(Model.Canal1.VideoCount, Model.Canal2.VideoCount)">
+                            @Model.Canal1.VideoCount.ToString("N0") @GetIcon(Model.Canal1.VideoCount, Model.Canal2.VideoCount)
+                        </td>
+                        <td class="@GetHighlightClass(Model.Canal2.VideoCount, Model.Canal1.VideoCount)">
+                            @Model.Canal2.VideoCount.ToString("N0") @GetIcon(Model.Canal2.VideoCount, Model.Canal1.VideoCount)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Criado em</td>
+                        <td>@Model.Canal1.PublishedAt.ToShortDateString()</td>
+                        <td>@Model.Canal2.PublishedAt.ToShortDateString()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
